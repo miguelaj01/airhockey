@@ -17,3 +17,9 @@ UserSettings/
 *.mdb
 *.opendb
 *.VC.db
+Library/
+Temp/
+Logs/
+obj/
+Build/
+Builds/
