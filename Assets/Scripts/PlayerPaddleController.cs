@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerPaddleController : MonoBehaviour
 {
-    public float speed = 35f;
+    public float speed = 20f;
 
     public float minX = -3f;
     public float maxX = 0f;

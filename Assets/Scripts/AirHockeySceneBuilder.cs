@@ -1,4 +1,6 @@
 using UnityEngine;
+using Unity.MLAgents.Policies;
+using Unity.MLAgents.Actuators;
 
 public class AirHockeySceneBuilder : MonoBehaviour
 {
@@ -71,8 +73,7 @@ public class AirHockeySceneBuilder : MonoBehaviour
         Rigidbody rb = wall.AddComponent<Rigidbody>();
         rb.isKinematic = true;
 
-        Collider collider = wall.GetComponent<Collider>();
-        collider.material = bounceMaterial;
+        wall.GetComponent<Collider>().material = bounceMaterial;
     }
 
     void CreateGoals()
@@ -111,13 +112,13 @@ public class AirHockeySceneBuilder : MonoBehaviour
         rb.angularDamping = 4f;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
+
         rb.constraints =
             RigidbodyConstraints.FreezePositionY |
             RigidbodyConstraints.FreezeRotationX |
             RigidbodyConstraints.FreezeRotationZ;
 
-        Collider collider = puck.GetComponent<Collider>();
-        collider.material = bounceMaterial;
+        puck.GetComponent<Collider>().material = bounceMaterial;
 
         AirHockeyGameManager.Instance.RegisterPuck(puck);
         AirHockeyGameManager.Instance.ServePuck(Random.value > 0.5f ? 1 : -1);
@@ -127,13 +128,24 @@ public class AirHockeySceneBuilder : MonoBehaviour
     {
         GameObject puck = GameObject.Find("Puck");
 
-        CreatePaddle("Left Defender", new Vector3(-4.8f, 0.45f, 0), Color.blue, PaddleRole.LeftDefender, puck);
-        CreatePaddle("Left Striker", new Vector3(-2.2f, 0.45f, 0), Color.cyan, PaddleRole.HumanLeftStriker, puck);
-        CreatePaddle("Right Defender", new Vector3(4.8f, 0.45f, 0), Color.red, PaddleRole.RightDefender, puck);
-        CreatePaddle("Right Striker", new Vector3(2.2f, 0.45f, 0), new Color(1f, 0.5f, 0f), PaddleRole.RightStriker, puck);
+        bool playerIsStriker = AirHockeyUIController.selectedRole == "Striker";
+
+        if (playerIsStriker)
+        {
+            CreateHumanPaddle("Left Striker", new Vector3(-2.2f, 0.45f, 0), Color.cyan, -3f, 0f, puck);
+            CreateMLDefender("Left Defender", new Vector3(-4.8f, 0.45f, 0), Color.blue, -5.8f, -3.1f, puck, "DefenderBehavior", 0);
+        }
+        else
+        {
+            CreateHumanPaddle("Left Defender", new Vector3(-4.8f, 0.45f, 0), Color.blue, -5.8f, -3.1f, puck);
+            CreateMLStriker("Left Striker", new Vector3(-2.2f, 0.45f, 0), Color.cyan, -3f, 0f, puck, "StrikerBehavior", 0);
+        }
+
+        CreateMLDefender("Right Defender", new Vector3(4.8f, 0.45f, 0), Color.red, 3.1f, 5.8f, puck, "DefenderBehavior", 1);
+        CreateMLStriker("Right Striker", new Vector3(2.2f, 0.45f, 0), new Color(1f, 0.5f, 0f), 0f, 3f, puck, "StrikerBehavior", 1);
     }
 
-    void CreatePaddle(string name, Vector3 position, Color color, PaddleRole role, GameObject puck)
+    GameObject CreateBasePaddle(string name, Vector3 position, Color color)
     {
         GameObject paddle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         paddle.name = name;
@@ -145,54 +157,92 @@ public class AirHockeySceneBuilder : MonoBehaviour
         rb.useGravity = false;
         rb.isKinematic = true;
         rb.mass = 5f;
+        rb.linearDamping = 0f;
+        rb.angularDamping = 0.05f;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
+
         rb.constraints =
             RigidbodyConstraints.FreezePositionY |
             RigidbodyConstraints.FreezeRotationX |
             RigidbodyConstraints.FreezeRotationY |
             RigidbodyConstraints.FreezeRotationZ;
 
-        Collider collider = paddle.GetComponent<Collider>();
-        collider.material = bounceMaterial;
+        paddle.GetComponent<Collider>().material = bounceMaterial;
 
-        if (role == PaddleRole.HumanLeftStriker)
-        {
-            PlayerPaddleController controller = paddle.AddComponent<PlayerPaddleController>();
-            controller.minX = -3f;
-            controller.maxX = 0f;
-            controller.minZ = -2.7f;
-            controller.maxZ = 2.7f;
-            controller.speed = 35f;
-        }
-        else
-        {
-            SimpleAIPaddleController ai = paddle.AddComponent<SimpleAIPaddleController>();
-            ai.puck = puck.transform;
-            ai.speed = 4.5f;
+        return paddle;
+    }
 
-            if (role == PaddleRole.LeftDefender)
-            {
-                ai.minX = -5.8f;
-                ai.maxX = -3.1f;
-                ai.minZ = -2.7f;
-                ai.maxZ = 2.7f;
-            }
-            else if (role == PaddleRole.RightDefender)
-            {
-                ai.minX = 3.1f;
-                ai.maxX = 5.8f;
-                ai.minZ = -2.7f;
-                ai.maxZ = 2.7f;
-            }
-            else if (role == PaddleRole.RightStriker)
-            {
-                ai.minX = 0f;
-                ai.maxX = 3f;
-                ai.minZ = -2.7f;
-                ai.maxZ = 2.7f;
-            }
+    void CreateHumanPaddle(string name, Vector3 position, Color color, float minX, float maxX, GameObject puck)
+    {
+        GameObject paddle = CreateBasePaddle(name, position, color);
+
+        PlayerPaddleController controller = paddle.AddComponent<PlayerPaddleController>();
+        controller.minX = minX;
+        controller.maxX = maxX;
+        controller.minZ = -2.7f;
+        controller.maxZ = 2.7f;
+        controller.speed = 35f;
+    }
+
+    void CreateMLStriker(string name, Vector3 position, Color color, float minX, float maxX, GameObject puck, string behaviorName, int teamId)
+    {
+        GameObject paddle = CreateBasePaddle(name, position, color);
+
+        StrikerAgent agent = paddle.AddComponent<StrikerAgent>();
+        agent.puck = puck.transform;
+        agent.puckRb = puck.GetComponent<Rigidbody>();
+        agent.minX = minX;
+        agent.maxX = maxX;
+        agent.minZ = -2.7f;
+        agent.maxZ = 2.7f;
+        agent.moveSpeed = 8f;
+
+        AddBehaviorSetup(paddle, behaviorName, teamId);
+    }
+
+    void CreateMLDefender(string name, Vector3 position, Color color, float minX, float maxX, GameObject puck, string behaviorName, int teamId)
+    {
+        GameObject paddle = CreateBasePaddle(name, position, color);
+
+        DefenderAgent agent = paddle.AddComponent<DefenderAgent>();
+        agent.puck = puck.transform;
+        agent.puckRb = puck.GetComponent<Rigidbody>();
+        agent.minX = minX;
+        agent.maxX = maxX;
+        agent.minZ = -2.7f;
+        agent.maxZ = 2.7f;
+        agent.moveSpeed = 8f;
+
+        AddBehaviorSetup(paddle, behaviorName, teamId);
+    }
+
+    void AddBehaviorSetup(GameObject paddle, string behaviorName, int teamId)
+    {
+        BehaviorParameters behavior = paddle.GetComponent<BehaviorParameters>();
+
+        if (behavior == null)
+        {
+            behavior = paddle.AddComponent<BehaviorParameters>();
         }
+
+        behavior.BehaviorName = behaviorName;
+        behavior.BehaviorType = BehaviorType.Default;
+        behavior.TeamId = teamId;
+
+        behavior.BrainParameters.VectorObservationSize = 8;
+        behavior.BrainParameters.ActionSpec = ActionSpec.MakeContinuous(2);
+
+        Unity.MLAgents.DecisionRequester decisionRequester =
+            paddle.GetComponent<Unity.MLAgents.DecisionRequester>();
+
+        if (decisionRequester == null)
+        {
+            decisionRequester = paddle.AddComponent<Unity.MLAgents.DecisionRequester>();
+        }
+
+        decisionRequester.DecisionPeriod = 5;
+        decisionRequester.TakeActionsBetweenDecisions = true;
     }
 
     void CreateCameraAndLight()
@@ -209,12 +259,4 @@ public class AirHockeySceneBuilder : MonoBehaviour
             light.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
         }
     }
-}
-
-public enum PaddleRole
-{
-    HumanLeftStriker,
-    LeftDefender,
-    RightDefender,
-    RightStriker
 }

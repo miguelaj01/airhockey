@@ -12,12 +12,14 @@ public class AirHockeyUIController : MonoBehaviour
     private Label roleLabel;
     private Label winnerLabel;
 
+    private Button restartButton;
+
     public static string selectedRole = "Striker";
+    public static string boardOrientation = "Horizontal";
 
     void Awake()
     {
         uiDocument = GetComponent<UIDocument>();
-
         VisualElement root = uiDocument.rootVisualElement;
 
         mainMenu = root.Q<VisualElement>("MainMenu");
@@ -31,7 +33,7 @@ public class AirHockeyUIController : MonoBehaviour
         Button defenderButton = root.Q<Button>("PlayDefenderButton");
         Button verticalButton = root.Q<Button>("VerticalButton");
         Button horizontalButton = root.Q<Button>("HorizontalButton");
-        Button restartButton = root.Q<Button>("RestartButton");
+        restartButton = root.Q<Button>("RestartButton");
 
         strikerButton.clicked += () =>
         {
@@ -47,23 +49,28 @@ public class AirHockeyUIController : MonoBehaviour
 
         verticalButton.clicked += () =>
         {
-            Screen.orientation = ScreenOrientation.Portrait;
+            boardOrientation = "Vertical";
+            SetCameraVertical();
         };
 
         horizontalButton.clicked += () =>
         {
-            Screen.orientation = ScreenOrientation.LandscapeLeft;
+            boardOrientation = "Horizontal";
+            SetCameraHorizontal();
         };
 
         restartButton.clicked += () =>
         {
             if (AirHockeyGameManager.Instance != null)
             {
-                AirHockeyGameManager.Instance.ResetPuck(Random.value > 0.5f ? 1 : -1);
+                AirHockeyGameManager.Instance.ResetFullMatch();
+                restartButton.style.display = DisplayStyle.None;
+                winnerLabel.text = "";
             }
         };
 
         hud.style.display = DisplayStyle.None;
+        restartButton.style.display = DisplayStyle.None;
     }
 
     void Update()
@@ -73,19 +80,18 @@ public class AirHockeyUIController : MonoBehaviour
         scoreLabel.text = "Left Team: " + AirHockeyGameManager.Instance.leftScore +
                           " | Right Team: " + AirHockeyGameManager.Instance.rightScore;
 
-        roleLabel.text = "Current Role: " + selectedRole;
+        roleLabel.text = "Current Role: " + selectedRole +
+                         " | Board: " + boardOrientation;
 
-        if (AirHockeyGameManager.Instance.leftScore >= 7)
+        if (AirHockeyGameManager.Instance.matchOver)
         {
-            winnerLabel.text = "LEFT TEAM WINS!";
-        }
-        else if (AirHockeyGameManager.Instance.rightScore >= 7)
-        {
-            winnerLabel.text = "RIGHT TEAM WINS!";
+            winnerLabel.text = AirHockeyGameManager.Instance.winnerMessage;
+            restartButton.style.display = DisplayStyle.Flex;
         }
         else
         {
             winnerLabel.text = "";
+            restartButton.style.display = DisplayStyle.None;
         }
     }
 
@@ -93,5 +99,21 @@ public class AirHockeyUIController : MonoBehaviour
     {
         mainMenu.style.display = DisplayStyle.None;
         hud.style.display = DisplayStyle.Flex;
+    }
+
+    void SetCameraHorizontal()
+    {
+        if (Camera.main == null) return;
+
+        Camera.main.transform.position = new Vector3(0f, 8.5f, -7.5f);
+        Camera.main.transform.rotation = Quaternion.Euler(55f, 0f, 0f);
+    }
+
+    void SetCameraVertical()
+    {
+        if (Camera.main == null) return;
+
+        Camera.main.transform.position = new Vector3(-7.5f, 8.5f, 0f);
+        Camera.main.transform.rotation = Quaternion.Euler(55f, 90f, 0f);
     }
 }

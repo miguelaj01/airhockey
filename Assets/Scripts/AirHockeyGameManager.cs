@@ -7,8 +7,11 @@ public class AirHockeyGameManager : MonoBehaviour
     public int leftScore = 0;
     public int rightScore = 0;
 
-    public float puckMinSpeed = 8f;
-    public float puckMaxSpeed = 20f;
+    public float puckMinSpeed = 6f;
+    public float puckMaxSpeed = 12f;
+
+    public bool matchOver = false;
+    public string winnerMessage = "";
 
     private GameObject puck;
     private Rigidbody puckRb;
@@ -26,33 +29,61 @@ public class AirHockeyGameManager : MonoBehaviour
 
     public void ScoreGoal(bool leftGoal)
     {
+        if (matchOver) return;
+
         if (leftGoal)
         {
             rightScore++;
             Debug.Log("Right Team Scores! Score: Left " + leftScore + " - Right " + rightScore);
-            ResetPuck(-1);
         }
         else
         {
             leftScore++;
             Debug.Log("Left Team Scores! Score: Left " + leftScore + " - Right " + rightScore);
-            ResetPuck(1);
         }
 
-        if (leftScore >= 7 || rightScore >= 7)
+        if (leftScore >= 7)
         {
-            Debug.Log("Match finished. Resetting score.");
-            leftScore = 0;
-            rightScore = 0;
+            EndMatch("LEFT TEAM WINS!");
+            return;
         }
+
+        if (rightScore >= 7)
+        {
+            EndMatch("RIGHT TEAM WINS!");
+            return;
+        }
+
+        ResetPuck(leftGoal ? -1 : 1);
+    }
+
+    void EndMatch(string message)
+    {
+        matchOver = true;
+        winnerMessage = message;
+
+        if (puckRb != null)
+        {
+            puckRb.linearVelocity = Vector3.zero;
+            puckRb.angularVelocity = Vector3.zero;
+        }
+
+        Debug.Log(message);
+    }
+
+    public void ResetFullMatch()
+    {
+        leftScore = 0;
+        rightScore = 0;
+        matchOver = false;
+        winnerMessage = "";
+
+        ResetPuck(Random.value > 0.5f ? 1 : -1);
     }
 
     public void ResetPuck(int serveDirection)
     {
-        if (puck == null || puckRb == null)
-        {
-            return;
-        }
+        if (puck == null || puckRb == null) return;
 
         puck.transform.position = new Vector3(0f, 0.35f, 0f);
         puckRb.linearVelocity = Vector3.zero;
@@ -63,31 +94,22 @@ public class AirHockeyGameManager : MonoBehaviour
 
     public void ServePuck(int direction)
     {
-        if (puckRb == null)
-        {
-            return;
-        }
+        if (puckRb == null || matchOver) return;
 
         float zDirection = Random.Range(-0.45f, 0.45f);
         Vector3 forceDirection = new Vector3(direction, 0f, zDirection).normalized;
 
-        puckRb.AddForce(forceDirection * 15f, ForceMode.Impulse);
+        puckRb.AddForce(forceDirection * 10f, ForceMode.Impulse);
     }
 
     void FixedUpdate()
     {
-        if (puckRb == null)
-        {
-            return;
-        }
+        if (puckRb == null || matchOver) return;
 
         Vector3 velocity = puckRb.linearVelocity;
         velocity.y = 0f;
 
-        if (velocity.magnitude < 0.1f)
-        {
-            return;
-        }
+        if (velocity.magnitude < 0.1f) return;
 
         if (velocity.magnitude < puckMinSpeed)
         {
