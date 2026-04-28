@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\jehvg\\AirHockeyMLProject\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{45F4529A-086A-B08C-2C63-828237572154}|Assembly-CSharp.csproj|c:\\users\\jehvg\\airhockeymlproject\\assets\\scripts\\airhockeygamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45F4529A-086A-B08C-2C63-828237572154}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\airhockeygamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45F4529A-086A-B08C-2C63-828237572154}|Assembly-CSharp.csproj|C:\\Users\\jehvg\\AirHockeyMLProject\\assets\\scripts\\goaltrigger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45F4529A-086A-B08C-2C63-828237572154}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\goaltrigger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45F4529A-086A-B08C-2C63-828237572154}|Assembly-CSharp.csproj|C:\\Users\\jehvg\\AirHockeyMLProject\\assets\\scripts\\playerpaddlecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45F4529A-086A-B08C-2C63-828237572154}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playerpaddlecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45F4529A-086A-B08C-2C63-828237572154}|Assembly-CSharp.csproj|C:\\Users\\jehvg\\AirHockeyMLProject\\assets\\scripts\\airhockeyscenebuilder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45F4529A-086A-B08C-2C63-828237572154}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\airhockeyscenebuilder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AirHockeyGameManager.cs",
+              "DocumentMoniker": "C:\\Users\\jehvg\\AirHockeyMLProject\\Assets\\Scripts\\AirHockeyGameManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AirHockeyGameManager.cs",
+              "ToolTip": "C:\\Users\\jehvg\\AirHockeyMLProject\\Assets\\Scripts\\AirHockeyGameManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AirHockeyGameManager.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAmwEsAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T20:54:18.53Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "GoalTrigger.cs",
+              "DocumentMoniker": "C:\\Users\\jehvg\\AirHockeyMLProject\\Assets\\Scripts\\GoalTrigger.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\GoalTrigger.cs",
+              "ToolTip": "C:\\Users\\jehvg\\AirHockeyMLProject\\Assets\\Scripts\\GoalTrigger.cs",
+              "RelativeToolTip": "Assets\\Scripts\\GoalTrigger.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T20:54:18.629Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PlayerPaddleController.cs",
+              "DocumentMoniker": "C:\\Users\\jehvg\\AirHockeyMLProject\\Assets\\Scripts\\PlayerPaddleController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\PlayerPaddleController.cs",
+              "ToolTip": "C:\\Users\\jehvg\\AirHockeyMLProject\\Assets\\Scripts\\PlayerPaddleController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\PlayerPaddleController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T20:54:18.633Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AirHockeySceneBuilder.cs",
+              "DocumentMoniker": "C:\\Users\\jehvg\\AirHockeyMLProject\\Assets\\Scripts\\AirHockeySceneBuilder.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AirHockeySceneBuilder.cs",
+              "ToolTip": "C:\\Users\\jehvg\\AirHockeyMLProject\\Assets\\Scripts\\AirHockeySceneBuilder.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AirHockeySceneBuilder.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T20:54:18.636Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

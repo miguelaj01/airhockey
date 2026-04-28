@@ -1,0 +1,75 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1777264163",
+        "python_version": "3.9.13 (tags/v3.9.13:6de2ca5, May 17 2022, 16:36:42) [MSC v.1929 64 bit (AMD64)]",
+        "command_line_arguments": "C:\\Users\\jehvg\\AirHockeyMLProject\\mlagents-env\\Scripts\\mlagents-learn Assets/ml-agents/config/airhockey_config.yaml --run-id=AirHockeyStriker1 --force",
+        "mlagents_version": "0.30.0",
+        "mlagents_envs_version": "0.30.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "1.13.1+cu117",
+        "numpy_version": "1.21.2",
+        "end_time_seconds": "1777264218"
+    },
+    "total": 54.652137,
+    "count": 1,
+    "self": 0.04653330000000011,
+    "children": {
+        "run_training.setup": {
+            "total": 0.24823929999999983,
+            "count": 1,
+            "self": 0.24823929999999983
+        },
+        "TrainerController.start_learning": {
+            "total": 54.3573644,
+            "count": 1,
+            "self": 0.00031150000000224054,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 52.7531228,
+                    "count": 1,
+                    "self": 52.7531228
+                },
+                "TrainerController.advance": {
+                    "total": 1.3489138999999994,
+                    "count": 1,
+                    "self": 1.9499999993399797e-05,
+                    "children": {
+                        "env_step": {
+                            "total": 1.348894400000006,
+                            "count": 1,
+                            "self": 0.0002686000000053923,
+                            "children": {
+                                "SubprocessEnvManager._take_step": {
+                                    "total": 1.3486258000000007,
+                                    "count": 1,
+                                    "self": 5.4099999999834836e-05,
+                                    "children": {
+                                        "TorchPolicy.evaluate": {
+                                            "total": 1.3485717000000008,
+                                            "count": 1,
+                                            "self": 1.3485717000000008
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "TrainerController._save_models": {
+                    "total": 0.2550162,
+                    "count": 1,
+                    "self": 0.0070438000000052625,
+                    "children": {
+                        "RLTrainer._checkpoint": {
+                            "total": 0.24797239999999476,
+                            "count": 1,
+                            "self": 0.24797239999999476
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
