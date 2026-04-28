@@ -2,51 +2,42 @@ using UnityEngine;
 
 public class PlayerPaddleController : MonoBehaviour
 {
-    public float moveSpeed = 14f;
+    public float speed = 35f;
 
-    public float minX = -8f;
-    public float maxX = 8f;
-    public float minZ = -4f;
-    public float maxZ = 4f;
-
-    public bool useWASD = true;
-
-    private Rigidbody rb;
-    private Vector3 movement;
-
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
+    public float minX = -3f;
+    public float maxX = 0f;
+    public float minZ = -2.7f;
+    public float maxZ = 2.7f;
 
     void Update()
     {
-        float moveX = 0f;
-        float moveZ = 0f;
+        Vector3 move = Vector3.zero;
 
-        if (useWASD)
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
-            moveX = Input.GetAxisRaw("Horizontal");
-            moveZ = Input.GetAxisRaw("Vertical");
-        }
-        else
-        {
-            if (Input.GetKey(KeyCode.LeftArrow)) moveX = -1f;
-            if (Input.GetKey(KeyCode.RightArrow)) moveX = 1f;
-            if (Input.GetKey(KeyCode.UpArrow)) moveZ = 1f;
-            if (Input.GetKey(KeyCode.DownArrow)) moveZ = -1f;
+            move.z += 1f;
         }
 
-        movement = new Vector3(moveX, 0f, moveZ).normalized;
-    }
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        {
+            move.z -= 1f;
+        }
 
-    void FixedUpdate()
-    {
-        Vector3 newPosition = rb.position + movement * moveSpeed * Time.fixedDeltaTime;
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            move.x -= 1f;
+        }
 
-        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
-        newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            move.x += 1f;
+        }
 
-        rb.MovePosition(newPosition);
+        transform.position += move.normalized * speed * Time.deltaTime;
+
+        Vector3 position = transform.position;
+        position.x = Mathf.Clamp(position.x, minX, maxX);
+        position.z = Mathf.Clamp(position.z, minZ, maxZ);
+        transform.position = position;
     }
 }

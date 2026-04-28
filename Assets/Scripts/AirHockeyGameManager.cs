@@ -1,102 +1,101 @@
 using UnityEngine;
-using TMPro;
 
 public class AirHockeyGameManager : MonoBehaviour
 {
     public static AirHockeyGameManager Instance;
 
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI winText;
+    public int leftScore = 0;
+    public int rightScore = 0;
 
-    public GameObject puck;
+    public float puckMinSpeed = 8f;
+    public float puckMaxSpeed = 20f;
 
-    private int leftScore = 0;
-    private int rightScore = 0;
-    public int winningScore = 7;
+    private GameObject puck;
+    private Rigidbody puckRb;
 
     void Awake()
     {
         Instance = this;
     }
 
-    void Start()
+    public void RegisterPuck(GameObject puckObject)
     {
-        Time.timeScale = 1f;
-        UpdateScoreText();
-
-        if (winText != null)
-            winText.text = "";
+        puck = puckObject;
+        puckRb = puck.GetComponent<Rigidbody>();
     }
 
-    void Update()
+    public void ScoreGoal(bool leftGoal)
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (leftGoal)
         {
-            ResetMatch();
+            rightScore++;
+            Debug.Log("Right Team Scores! Score: Left " + leftScore + " - Right " + rightScore);
+            ResetPuck(-1);
+        }
+        else
+        {
+            leftScore++;
+            Debug.Log("Left Team Scores! Score: Left " + leftScore + " - Right " + rightScore);
+            ResetPuck(1);
+        }
+
+        if (leftScore >= 7 || rightScore >= 7)
+        {
+            Debug.Log("Match finished. Resetting score.");
+            leftScore = 0;
+            rightScore = 0;
         }
     }
 
-    public void RegisterPuck(GameObject newPuck)
+    public void ResetPuck(int serveDirection)
     {
-        puck = newPuck;
-    }
-
-    public void ScoreLeft()
-    {
-        leftScore++;
-        UpdateScoreText();
-        CheckWinner();
-    }
-
-    public void ScoreRight()
-    {
-        rightScore++;
-        UpdateScoreText();
-        CheckWinner();
-    }
-
-    void UpdateScoreText()
-    {
-        if (scoreText != null)
-            scoreText.text = leftScore + " - " + rightScore;
-    }
-
-    void CheckWinner()
-    {
-        if (winText == null) return;
-
-        if (leftScore >= winningScore)
+        if (puck == null || puckRb == null)
         {
-            winText.text = "Left Player Wins!";
+            return;
         }
-        else if (rightScore >= winningScore)
-        {
-            winText.text = "Right Player Wins!";
-        }
+
+        puck.transform.position = new Vector3(0f, 0.35f, 0f);
+        puckRb.linearVelocity = Vector3.zero;
+        puckRb.angularVelocity = Vector3.zero;
+
+        ServePuck(serveDirection);
     }
 
-    void ResetMatch()
+    public void ServePuck(int direction)
     {
-        Time.timeScale = 1f;
-
-        leftScore = 0;
-        rightScore = 0;
-        UpdateScoreText();
-
-        if (winText != null)
-            winText.text = "";
-
-        if (puck != null)
+        if (puckRb == null)
         {
-            puck.transform.position = new Vector3(0f, 0.35f, 0f);
+            return;
+        }
 
-            Rigidbody rb = puck.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                rb.AddForce(new Vector3(5f, 0f, 2f), ForceMode.Impulse);
-            }
+        float zDirection = Random.Range(-0.45f, 0.45f);
+        Vector3 forceDirection = new Vector3(direction, 0f, zDirection).normalized;
+
+        puckRb.AddForce(forceDirection * 15f, ForceMode.Impulse);
+    }
+
+    void FixedUpdate()
+    {
+        if (puckRb == null)
+        {
+            return;
+        }
+
+        Vector3 velocity = puckRb.linearVelocity;
+        velocity.y = 0f;
+
+        if (velocity.magnitude < 0.1f)
+        {
+            return;
+        }
+
+        if (velocity.magnitude < puckMinSpeed)
+        {
+            puckRb.linearVelocity = velocity.normalized * puckMinSpeed;
+        }
+        else if (velocity.magnitude > puckMaxSpeed)
+        {
+            puckRb.linearVelocity = velocity.normalized * puckMaxSpeed;
         }
     }
 }
